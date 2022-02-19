@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 class JournalEntryFields {
   // Date Transfer Object (DTO)
@@ -110,12 +111,24 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
   Widget saveButton() {
     return ElevatedButton(
       child: const Text('Save'),
-      onPressed: () {
+      onPressed: () async {
+        print('${formKey.currentState!.validate()}');
         if (formKey.currentState!.validate()) {
+          print('gets here');
           formKey.currentState?.save();
-          print('SAVED TO DATABASE');
+          // Development delete the file
+          await deleteDatabase('journal.db');
+
+          final Database database = await openDatabase('journal.db', version: 1,
+              onCreate: (Database db, int version) async {
+            await db.execute(
+                'CREATE TABLE IF NOT EXISTS journal_entries(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, body TEXT, rating INTEGER);');
+          });
+
+          await database.close();
           addDateToJournalEntryValue();
         }
+        print('not valid');
       },
     );
   }
