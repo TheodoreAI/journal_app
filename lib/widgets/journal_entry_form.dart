@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-
-class JournalEntryFields {
-  // Date Transfer Object (DTO)
-  String? title;
-  String? body;
-  DateTime? dateTime;
-  int? rating;
-  String toStrings() {
-    return 'Title: $title, Body: $body, Time: $dateTime, Rating: $rating';
-  }
-}
+import '../models/journal_entry.dart';
 
 class JournalEntryForm extends StatefulWidget {
   const JournalEntryForm({Key? key}) : super(key: key);
@@ -112,21 +102,30 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
     return ElevatedButton(
       child: const Text('Save'),
       onPressed: () async {
-        print('${formKey.currentState!.validate()}');
         if (formKey.currentState!.validate()) {
-          print('gets here');
           formKey.currentState?.save();
           // Development delete the file
           await deleteDatabase('journal.db');
-
           final Database database = await openDatabase('journal.db', version: 1,
               onCreate: (Database db, int version) async {
             await db.execute(
-                'CREATE TABLE IF NOT EXISTS journal_entries(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, body TEXT, rating INTEGER);');
+                'CREATE TABLE IF NOT EXISTS journal_entries(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, body TEXT NOT NULL, rating INTEGER NOT NULL, date TEXT NOT NULL);');
+          });
+
+          await database.transaction((txn) async {
+            await txn.rawInsert(
+                'INSERT INTO journal_entries(title, body, rating, date) VALUES(?, ?, ?, ?)',
+                [
+                  journalEntryValue.title,
+                  journalEntryValue.body,
+                  journalEntryValue.rating,
+                  journalEntryValue.dateTime
+                ]);
           });
 
           await database.close();
           addDateToJournalEntryValue();
+          Navigator.of(context).pop();
         }
         print('not valid');
       },
