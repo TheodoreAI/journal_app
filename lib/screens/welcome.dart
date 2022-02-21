@@ -3,8 +3,11 @@ import 'package:journal_app/screens/new_entry.dart';
 
 class Welcome extends StatelessWidget {
   static const routeName = '/';
-  final void Function() updateTheme;
-  const Welcome({Key? key, required this.updateTheme}) : super(key: key);
+  final void Function(bool) updateTheme;
+  final bool booleanLight;
+  const Welcome(
+      {Key? key, required this.updateTheme, required this.booleanLight})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     // Make sure the arguments sent from one screen to another match the type
@@ -51,7 +54,9 @@ class Welcome extends StatelessWidget {
         textAlign: TextAlign.center,
       )),
       SwitchListTile(
-          title: const Text('Lights'), value: true, onChanged: updateTheme)
+          title: const Text('Lights'),
+          value: booleanLight,
+          onChanged: updateTheme)
     ])
         // Disable opening the end drawer with a swipe gesture.
         // endDrawerEnableOpenDragGesture: false,
