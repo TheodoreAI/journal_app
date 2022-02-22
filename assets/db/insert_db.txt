@@ -1,0 +1,1 @@
+INSERT INTO journal_entries(title, body, rating, date) VALUES(?, ?, ?, ?);
