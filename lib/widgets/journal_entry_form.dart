@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/journal_entry.dart';
 import 'package:flutter/services.dart';
+import '../widgets/dropdown_formfield.dart';
+import 'package:intl/intl.dart';
 
 const buildTableQuery = 'assets/db/build_db.txt';
 const insertTableQuery = 'assets/db/insert_db.txt';
@@ -33,13 +35,30 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
         children: [
           titleTextField(),
           bodyTextField(),
-          ratingDropDown(),
+          DropdownRatingFormField(
+              maxRating: 5,
+              validator: (value) {
+                if (value > 5) {
+                  return 'Error Rating';
+                }
+              },
+              onSaved: (value) {
+                journalEntryValue.rating = value;
+              }),
           const SizedBox(height: 10),
           saveButton(),
           cancelButton()
         ],
       ),
     );
+  }
+
+  validator(value) {
+    if (value!.isEmpty) {
+      return 'Please Enter a Title';
+    } else {
+      return null;
+    }
   }
 
   Widget titleTextField() {
@@ -69,32 +88,12 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
           labelText: 'Body', border: OutlineInputBorder()),
       onSaved: (value) {
         // store value in an object
-        journalEntryValue.title = value;
+        journalEntryValue.body = value;
         // Save in a database here
       },
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please Enter a Body';
-        } else {
-          return null;
-        }
-      },
-    );
-  }
-
-  Widget ratingDropDown() {
-    return TextFormField(
-      autofocus: true,
-      decoration: const InputDecoration(
-          labelText: 'Rating', border: OutlineInputBorder()),
-      onSaved: (value) {
-        // store value in an object
-        journalEntryValue.title = value;
-        // Save in a database here
-      },
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Please Enter a Rating';
         } else {
           return null;
         }
@@ -124,10 +123,15 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
   }
 
   void addDateToJournalEntryValue() {
-    journalEntryValue.dateTime = DateTime.now();
+    // Add the date as a string
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyyy.MMMMM.dd GGG hh:mm aaa');
+    final String formatted = formatter.format(now);
+    journalEntryValue.dateTime = formatted;
   }
 
   void doABunchOfDatabaseStuff() async {
+    addDateToJournalEntryValue();
     // importing the database string
     String buildTable = await rootBundle.loadString(buildTableQuery);
     String insertTable = await rootBundle.loadString(insertTableQuery);
@@ -138,6 +142,7 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
       await db.execute(buildTable);
     });
     await database.transaction((txn) async {
+      print('dateTime ${journalEntryValue.dateTime}');
       await txn.rawInsert(insertTable, [
         journalEntryValue.title,
         journalEntryValue.body,
@@ -146,7 +151,6 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
       ]);
     });
     await database.close();
-    addDateToJournalEntryValue();
     Navigator.of(context).pop();
   }
 }
