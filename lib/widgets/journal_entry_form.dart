@@ -3,9 +3,9 @@ import 'package:sqflite/sqflite.dart';
 import '../models/journal_entry.dart';
 import 'package:flutter/services.dart';
 
-const BUILD_TABLE = 'assets/db/build_db.txt';
-const INSERT_TABLE = 'assets/db/insert_db.txt';
-const SELECT_TABLE = 'assets/db/SELECT_db.txt';
+const buildTableQuery = 'assets/db/build_db.txt';
+const insertTableQuery = 'assets/db/insert_db.txt';
+const selectTableQuert = 'assets/db/SELECT_db.txt';
 
 class JournalEntryForm extends StatefulWidget {
   const JournalEntryForm({Key? key}) : super(key: key);
@@ -129,8 +129,8 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
 
   void doABunchOfDatabaseStuff() async {
     // importing the database string
-    String buildTable = await rootBundle.loadString(BUILD_TABLE);
-    String insertTable = await rootBundle.loadString(INSERT_TABLE);
+    String buildTable = await rootBundle.loadString(buildTableQuery);
+    String insertTable = await rootBundle.loadString(insertTableQuery);
     // Development delete the file
     await deleteDatabase('journal.sqlite3.db');
     final Database database = await openDatabase('journal.sqlite3.db',
