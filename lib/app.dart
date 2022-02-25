@@ -1,5 +1,6 @@
 import '../screens/welcome.dart';
 import 'package:journal_app/screens/new_entry.dart';
+import 'package:journal_app/screens/entry_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

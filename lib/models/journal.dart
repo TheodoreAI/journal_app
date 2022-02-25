@@ -1,10 +1,8 @@
 class Journal {
   // Date Transfer Object (DTO)
-  String? title;
-  String? body;
-  DateTime? dateTime;
-  int? rating;
-  String toStrings() {
-    return 'Title: $title, Body: $body, Time: $dateTime, Rating: $rating';
+  List entries;
+  Journal({required this.entries});
+  get listEntries {
+    return entries;
   }
 }

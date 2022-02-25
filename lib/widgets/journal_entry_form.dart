@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 const buildTableQuery = 'assets/db/build_db.txt';
 const insertTableQuery = 'assets/db/insert_db.txt';
-const selectTableQuert = 'assets/db/SELECT_db.txt';
 
 class JournalEntryForm extends StatefulWidget {
   const JournalEntryForm({Key? key}) : super(key: key);
@@ -31,7 +30,6 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
     return Form(
       key: formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           titleTextField(),
           bodyTextField(),
@@ -51,14 +49,6 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
         ],
       ),
     );
-  }
-
-  validator(value) {
-    if (value!.isEmpty) {
-      return 'Please Enter a Title';
-    } else {
-      return null;
-    }
   }
 
   Widget titleTextField() {
@@ -117,7 +107,7 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
     return ElevatedButton(
       child: const Text('Cancel'),
       onPressed: () {
-        print('Cancelled!');
+        Navigator.of(context).pop();
       },
     );
   }
@@ -125,7 +115,7 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
   void addDateToJournalEntryValue() {
     // Add the date as a string
     final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('yyyyy.MMMMM.dd GGG hh:mm aaa');
+    final DateFormat formatter = DateFormat('yyyy.MMMMM.dd GGG hh:mm aaa');
     final String formatted = formatter.format(now);
     journalEntryValue.dateTime = formatted;
   }
@@ -135,14 +125,13 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
     // importing the database string
     String buildTable = await rootBundle.loadString(buildTableQuery);
     String insertTable = await rootBundle.loadString(insertTableQuery);
-    // Development delete the file
+    // // Development delete the file
     await deleteDatabase('journal.sqlite3.db');
     final Database database = await openDatabase('journal.sqlite3.db',
         version: 1, onCreate: (Database db, int version) async {
       await db.execute(buildTable);
     });
     await database.transaction((txn) async {
-      print('dateTime ${journalEntryValue.dateTime}');
       await txn.rawInsert(insertTable, [
         journalEntryValue.title,
         journalEntryValue.body,

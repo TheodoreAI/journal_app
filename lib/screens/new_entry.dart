@@ -10,14 +10,18 @@ class NewEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Journal App')),
-        body: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-              label(context),
-              button(context),
-              const JournalEntryForm()
-            ])));
+        body: ListView(
+          children: [
+            Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                  label(context),
+                  button(context),
+                  const JournalEntryForm()
+                ])),
+          ],
+        ));
   }
 
   Widget label(BuildContext context) {
