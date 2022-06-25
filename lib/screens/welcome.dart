@@ -3,7 +3,6 @@ import 'package:journal_app/screens/new_entry.dart';
 import 'package:journal_app/screens/entry_view.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/journal_entry.dart';
-import 'package:sqflite/sqflite.dart';
 
 const selectTableQuery = 'assets/db/select_db.txt';
 const buildTableQuery = 'assets/db/build_db.txt';
@@ -55,10 +54,11 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     // Make sure the arguments sent from one screen to another match the type
+    // ignore: unnecessary_null_comparison
     if (journal == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Welcome!')),
-        body: Center(
+        body: const Center(
             child: Icon(
           Icons.hourglass_empty,
           size: 60,
@@ -115,7 +115,7 @@ class _WelcomeState extends State<Welcome> {
             title: Text("${journal[index].title}"),
             subtitle: Text(
               '${journal[index].dateTime}',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           );
         });
