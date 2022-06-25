@@ -39,6 +39,7 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
                 if (value > 5) {
                   return 'Error Rating';
                 }
+                return null;
               },
               onSaved: (value) {
                 journalEntryValue.rating = value;
